@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="PerlinNoise" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/Perlin" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
+					<Add option="-DDEBUG" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/Perlin" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-DBUILD_DLL" />
+					<Add option="-DDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="TestApp">
+				<Option output="bin/TestApp/Perlin" prefix_auto="1" extension_auto="1" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DTESTAPP" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="Includes" />
+		</Compiler>
+		<Unit filename="Includes/Dll.h" />
+		<Unit filename="Includes/Hash8.h" />
+		<Unit filename="Includes/Perlin.h" />
+		<Unit filename="Includes/PerlinNoise.h" />
+		<Unit filename="Includes/Platform.h" />
+		<Unit filename="Includes/Rand64.h" />
+		<Unit filename="Includes/Vector.h" />
+		<Unit filename="Modules/Dll.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Modules/Hash8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Modules/Perlin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Modules/Rand64.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Modules/Vector.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="PerlinNoise.c">
+			<Option compilerVar="CC" />
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="TestApp.c">
+			<Option compilerVar="CC" />
+			<Option target="TestApp" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
