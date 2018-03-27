@@ -1,15 +1,14 @@
 //This is the file that contains the public .dll functions
 #include <PerlinNoise.h>
 #include <Perlin.h>
+#include <stdio.h>
 
 static __thread pPerlin_t perlin = NULL;
 
 DLL_EXPORT int init_2d_perlin() {
 
-    if (perlin) { return 1;
-//        free_perlin(perlin);
-//        perlin = NULL;
-    }
+    //No need to Re-Init perlin noise
+    if (perlin) { return 2;}
 
     perlin = new_perlin(2);
     return (perlin ? 1 : 0);

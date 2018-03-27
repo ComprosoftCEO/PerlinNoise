@@ -6,7 +6,6 @@
 typedef void* pPerlin_t;
 
 //Variables for perlin data types
-typedef double pCoord;
 typedef uint16_t pSize;
 
 

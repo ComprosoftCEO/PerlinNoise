@@ -14,7 +14,6 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DBUILD_DLL" />
 					<Add option="-DDEBUG" />
@@ -29,7 +28,6 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-Wall" />
 					<Add option="-DBUILD_DLL" />
 					<Add option="-DDEBUG" />
 				</Compiler>
@@ -42,15 +40,19 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-O3" />
 					<Add option="-DTESTAPP" />
 				</Compiler>
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fPIC" />
 			<Add directory="Includes" />
 		</Compiler>
 		<Unit filename="Includes/Dll.h" />
 		<Unit filename="Includes/Hash8.h" />
+		<Unit filename="Includes/Perlin-Legacy.h" />
 		<Unit filename="Includes/Perlin.h" />
 		<Unit filename="Includes/PerlinNoise.h" />
 		<Unit filename="Includes/Platform.h" />
@@ -60,6 +62,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Modules/Hash8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Modules/Perlin-Legacy.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Modules/Perlin.c">

@@ -1,6 +1,7 @@
 #include <PerlinNoise.h>
 
-#ifndef TESTAPP
+#if !defined(TESTAPP) && defined(PLAT_WINDOWS)
+
 #include <windows.h>
 
 DLL_EXPORT BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
