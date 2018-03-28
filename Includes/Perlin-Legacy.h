@@ -15,7 +15,7 @@ pLegacy_Perlin_t new_legacy_perlin_seed(pLegacySize dimensions, uint64_t seed);
 void free_legacy_perlin(pLegacy_Perlin_t);
 
 //Expects a list of double, equal to the number of coordinates
-double legacy_perlin_noise(pLegacy_Perlin_t p, double* coords);
-
+double legacy_perlin_noise(pLegacy_Perlin_t p, const double* coords);
+double legacy_perlin_noise_octave(pLegacy_Perlin_t p, const double* coords, uint32_t octaves, double persistence);
 
 #endif // LEGACY_PERLIN_HEADER Included

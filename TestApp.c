@@ -26,8 +26,8 @@ int main() {
             coords[0] = ((double)i) / 100;
             coords[1] = ((double)j) / 100;
 
-            printf("%f\n",perlin_noise(perlin,coords));
-            printf("%f\n",legacy_perlin_noise(lperlin,coords));
+            printf("<%f,",perlin_noise(perlin,coords));
+            printf("%f>\n",legacy_perlin_noise(lperlin,coords));
         }}
         free_perlin(perlin);
         free_legacy_perlin(lperlin);

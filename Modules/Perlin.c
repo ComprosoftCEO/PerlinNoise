@@ -114,7 +114,7 @@ void free_perlin(pPerlin_t p) {
 
 
 //Return a value 0.0 to 1.0 for a given point in N-Dimensional space
-double perlin_noise(pPerlin_t p, double* coords) {
+double perlin_noise(pPerlin_t p, const double* coords) {
 
     if (!p) {return 0;}
     if (!coords) {return 0;}
@@ -188,4 +188,38 @@ double perlin_noise(pPerlin_t p, double* coords) {
     }
 
     return (perlin->dot_products[perlin->dim] + 1) / 2;
+}
+
+
+
+double perlin_noise_octave(pPerlin_t p, const double* coords, uint32_t octaves, double persistence) {
+    if (!p) {return 0;}
+    if (!coords) {return 0;}
+
+    pPerlin_Obj_t perlin = (pPerlin_Obj_t) p;
+
+    //Create a buffer to store coordinates (for doing frequency calculations)
+    double* temp_coords = malloc(sizeof(double) * perlin->dim);
+    if (!temp_coords) {return 0;}
+    memcpy(temp_coords, coords, sizeof(double) * perlin->dim);
+
+    uint32_t i;
+    double total = 0, frequency = 1, amplitude = 1;
+    double maxValue = 0;			// Used for normalizing result to 0.0 - 1.0
+    for(i = 0; i < octaves; i++) {
+        total += perlin_noise(p,temp_coords) * amplitude;
+
+        maxValue += amplitude;
+        amplitude *= persistence;
+        frequency *= 2;
+
+        //Update the coordinate frequencies
+        size_t index;
+        for (index = 0; index < perlin->dim; ++index) {
+            temp_coords[index] = coords[index] * frequency;
+        }
+    }
+
+    free(temp_coords);
+    return total/maxValue;
 }

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <math.h>
 
 
@@ -208,7 +209,7 @@ void free_legacy_perlin(pLegacy_Perlin_t p) {
 }
 
 
-double legacy_perlin_noise(pLegacy_Perlin_t p, double* coords) {
+double legacy_perlin_noise(pLegacy_Perlin_t p, const double* coords) {
 
     if (!p) {return 0;}
     if (!coords) {return 0;}
@@ -286,4 +287,37 @@ double legacy_perlin_noise(pLegacy_Perlin_t p, double* coords) {
 
     //Limit values from 0 to 1 (We get, by default, -1 to 1)
     return (perlin->dot_products[0] + 1) /2;
+}
+
+
+double legacy_perlin_noise_octave(pLegacy_Perlin_t p, const double* coords, uint32_t octaves, double persistence) {
+    if (!p) {return 0;}
+    if (!coords) {return 0;}
+
+    pLegacy_Perlin_Obj_t perlin = (pLegacy_Perlin_Obj_t) p;
+
+    //Create a buffer to store coordinates (for doing frequency calculations)
+    double* temp_coords = malloc(sizeof(double) * perlin->dim);
+    if (!temp_coords) {return 0;}
+    memcpy(temp_coords, coords, sizeof(double) * perlin->dim);
+
+    uint32_t i;
+    double total = 0, frequency = 1, amplitude = 1;
+    double maxValue = 0;			// Used for normalizing result to 0.0 - 1.0
+    for(i = 0; i < octaves; i++) {
+        total += legacy_perlin_noise(p,temp_coords) * amplitude;
+
+        maxValue += amplitude;
+        amplitude *= persistence;
+        frequency *= 2;
+
+        //Update the coordinate frequencies
+        size_t index;
+        for (index = 0; index < perlin->dim; ++index) {
+            temp_coords[index] = coords[index] * frequency;
+        }
+    }
+
+    free(temp_coords);
+    return total/maxValue;
 }
