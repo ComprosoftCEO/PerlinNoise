@@ -29,6 +29,8 @@ typedef struct {
     double* dot_products;   // List of dot products for each point in the cube
 } Legacy_Perlin_Obj_t, *pLegacy_Perlin_Obj_t;
 
+static pRand64 r64 = NULL;  //Used for random seeding
+
 //Private internal functions
 static int build_gradient_vectors(pLegacy_Perlin_Obj_t perlin);
 static pVector_t next_gradient_vector(pVector_t vector, pLegacySize dim);
@@ -44,8 +46,8 @@ static inline double smooth(double input) {
 
 
 pLegacy_Perlin_t new_legacy_perlin(pLegacySize dimensions) {
-    static pRand64 rand = NULL;
-    if (rand == NULL) {rand = New_Rand64();}
+    if (r64 == NULL) {r64 = New_Rand64();}
+    else {Rand64_RandomSeed(r64);}
     return new_legacy_perlin_seed(dimensions,Rand64_Next(rand));
 }
 
@@ -169,6 +171,22 @@ static pVector_t next_gradient_vector(pVector_t vector, pLegacySize dim) {
 
     return new_vect;
 }
+
+
+void reseed_legacy_perlin(pLegacy_Perlin_t p, uint64_t seed) {
+    if (!p) {return;}
+    pLegacy_Perlin_Obj_t perlin = (pLegacy_Perlin_Obj_t) p;
+    Rand64_Reseed(perlin->rand,seed);
+    Hash8_Reseed(perlin->hash,perlin->rand);
+}
+
+
+void random_seed_legacy_perlin(pLegacy_Perlin_t p) {
+    if (r64 == NULL) {r64 = New_Rand64();}
+    else {Rand64_RandomSeed(r64);}
+    reseed_legacy_perlin(p,Rand64_Next(r64));
+}
+
 
 
 

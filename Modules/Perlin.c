@@ -33,6 +33,7 @@ typedef struct {
 } Perlin_Obj_t, *pPerlin_Obj_t;
 
 
+static pRand64 r64 = NULL; //Used for random seeding and such...
 static inline double interpolate(double one, double two, double amount) {
     return ((one * (1 - amount)) + (two * amount));
 }
@@ -42,9 +43,9 @@ static inline double smooth(double input) {
 
 
 pPerlin_t new_perlin(pSize dimensions) {
-    static pRand64 rand = NULL;
-    if (rand == NULL) {rand = New_Rand64();}
-    return new_perlin_seed(dimensions,Rand64_Next(rand));
+    if (r64 == NULL) {r64 = New_Rand64();}
+    else {Rand64_RandomSeed(r64);}
+    return new_perlin_seed(dimensions,Rand64_Next(r64));
 }
 
 
@@ -94,7 +95,19 @@ error:
     return NULL;
 }
 
+void reseed_perlin(pPerlin_t p, uint64_t seed) {
+    if (!p) {return;}
+    pPerlin_Obj_t perlin = (pPerlin_Obj_t) p;
+    Rand64_Reseed(perlin->rand,seed);
+    Hash8_Reseed(perlin->hash,perlin->rand);
+}
 
+
+void random_seed_perlin(pPerlin_t p) {
+    if (r64 == NULL) {r64 = New_Rand64();}
+    else {Rand64_RandomSeed(r64);}
+    reseed_perlin(p,Rand64_Next(r64));
+}
 
 
 void free_perlin(pPerlin_t p) {

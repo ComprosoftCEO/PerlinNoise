@@ -12,6 +12,8 @@ typedef uint16_t pLegacySize;
 
 pLegacy_Perlin_t new_legacy_perlin(pLegacySize dimensions);
 pLegacy_Perlin_t new_legacy_perlin_seed(pLegacySize dimensions, uint64_t seed);
+void reseed_legacy_perlin(pLegacy_Perlin_t p, uint64_t seed);
+void random_seed_legacy_perlin(pLegacy_Perlin_t p);
 void free_legacy_perlin(pLegacy_Perlin_t);
 
 //Expects a list of double, equal to the number of coordinates
