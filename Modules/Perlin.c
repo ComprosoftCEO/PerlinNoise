@@ -127,7 +127,6 @@ double perlin_noise(pPerlin_t p, const double* coords) {
     size_t point_len = ((size_t) perlin->dim) * sizeof(double);
     size_t i;
 
-
     //Prepare the coordinates
     for (i = 0; i < perlin->dim; ++i) {
         perlin->start_coords[i] = floor(coords[i]);
@@ -156,7 +155,6 @@ double perlin_noise(pPerlin_t p, const double* coords) {
             g_arr[Rand64_Next(perlin->rand) % perlin->dim] = 0;
         }
 
-
         //Find the dot product, then propagate along the "chain"
         //  Until the final value is reached
         //
@@ -166,7 +164,7 @@ double perlin_noise(pPerlin_t p, const double* coords) {
         double dot = vector_dot_product(perlin->g_vect, perlin->p_vect);
         i = 0;
     merge:
-        if (perlin->counter[i]!= 0) {
+        if (perlin->counter[i] != 0) {
             dot = interpolate(perlin->dot_products[i],dot,perlin->unit_coords[i]);
             ++i;
             goto merge;
