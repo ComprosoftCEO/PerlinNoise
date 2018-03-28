@@ -19,17 +19,22 @@ int main() {
     if (perlin && lperlin) {
 
         int i, j;
-        for (i = 0; i < 100; ++i) {
-        for (j = 0; j < 100; ++j) {
+        for (j = 0; j < 25; ++j) {
+            random_seed_perlin(perlin);
 
-            double coords[2] = {0};
-            coords[0] = ((double)i) / 100;
-            coords[1] = ((double)j) / 100;
+            double coords[2] = {-0.2,10.4};
+            double pre = perlin_noise_octave(perlin,(double[]) {-0.2, 10.4},4,0.5);
+            double cur = perlin_noise_octave(perlin,(double[]) {-0.1, 10.4},4,0.5);
+            double new = perlin_noise_octave(perlin,(double[]) {0.0,  10.4},4,0.5);
 
-            printf("<%f,%f>\n",
-                   perlin_noise(perlin,coords),
-                   legacy_perlin_noise(lperlin,coords));
-        }}
+            if (cur > pre && cur > new ||
+                cur < pre && cur < new) {
+                    printf("%f %f %f\n",pre,cur,new);
+                }
+
+
+        }
+        //}
         free_perlin(perlin);
         free_legacy_perlin(lperlin);
     } else {
