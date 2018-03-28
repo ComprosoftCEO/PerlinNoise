@@ -48,7 +48,7 @@ static inline double smooth(double input) {
 pLegacy_Perlin_t new_legacy_perlin(pLegacySize dimensions) {
     if (r64 == NULL) {r64 = New_Rand64();}
     else {Rand64_RandomSeed(r64);}
-    return new_legacy_perlin_seed(dimensions,Rand64_Next(rand));
+    return new_legacy_perlin_seed(dimensions,Rand64_Next(r64));
 }
 
 
