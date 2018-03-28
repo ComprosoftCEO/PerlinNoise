@@ -7,8 +7,10 @@ static __thread pPerlin_t perlin = NULL;
 
 DLL_EXPORT int init_2d_perlin() {
 
-    //No need to Re-Init perlin noise
-    if (perlin) { return 2;}
+    if (perlin) {
+        free(perlin);
+        perlin = NULL;
+    }
 
     perlin = new_perlin(2);
     return (perlin ? 1 : 0);

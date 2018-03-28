@@ -24,6 +24,7 @@ typedef struct {
     uint8_t* counter;       // Used for iterating over every point in the Unit Cube (dim + 1)
     double* start_coords;   // Buffer to store start coordinates (Also holds the buffer for end, unit, and dot)
     double* end_coords;     // Buffer to store end coordinates
+    double* point_coords;   // Used by the hash function when computing the Point Coordinates
     double* pnt_bldr[2];    // Point Builder - Used to do fast copy when merging start & end coordinates into a point coordinate
     double* unit_coords;    // XY coordinates inside the unit cube (0.0 to 1.0), modified by fade before coordinates are copied
     double* dot_products;   // Dot products buffer for computing as the algorithm runs (dot_product[dim] = Final Value)
@@ -71,11 +72,12 @@ pPerlin_t new_perlin_seed(pSize dimensions, uint64_t seed) {
     //Internal buffers for Unit Start, Unit End, and Unit Coordinates
     //  Allocates one space at the end for the final dot product
     //  Which is based on the coutner index (which overflows to dim + 1)
-    perlin->start_coords = malloc(sizeof(double) * ((dimensions*4) + 1));
+    perlin->start_coords = malloc(sizeof(double) * ((dimensions*5) + 1));
     if (!perlin->start_coords) {goto error;}
     perlin->end_coords = (perlin->start_coords + (dimensions));
-    perlin->unit_coords = (perlin->start_coords + (dimensions*2));
-    perlin->dot_products = (perlin->start_coords + (dimensions*3));
+    perlin->point_coords = (perlin->start_coords + (dimensions*2));
+    perlin->unit_coords = (perlin->start_coords + (dimensions*3));
+    perlin->dot_products = (perlin->start_coords + (dimensions*4));
     perlin->pnt_bldr[0] = perlin->start_coords;
     perlin->pnt_bldr[1] = perlin->end_coords;
 
@@ -122,7 +124,7 @@ double perlin_noise(pPerlin_t p, const double* coords) {
     pPerlin_Obj_t perlin = (pPerlin_Obj_t) p;
     double *g_arr = get_vector_array(perlin->g_vect);
     double *p_arr = get_vector_array(perlin->p_vect);
-    size_t p_arr_len = ((size_t) perlin->dim) * sizeof(double);
+    size_t point_len = ((size_t) perlin->dim) * sizeof(double);
     size_t i;
 
 
@@ -130,8 +132,9 @@ double perlin_noise(pPerlin_t p, const double* coords) {
     for (i = 0; i < perlin->dim; ++i) {
         perlin->start_coords[i] = floor(coords[i]);
         perlin->end_coords[i] = perlin->start_coords[i] + 1;
+        perlin->point_coords[i] = perlin->start_coords[i];
         perlin->unit_coords[i] = smooth(coords[i] - perlin->start_coords[i]);
-        p_arr[i] = coords[i] - perlin->start_coords[i];
+        p_arr[i] = coords[i] - perlin->point_coords[i];
     }
 
 
@@ -144,7 +147,7 @@ double perlin_noise(pPerlin_t p, const double* coords) {
         //
         //  1. Fill every spot with a number (-1 or 1)
         //  2. For dimensions > 2, pick a spot to store 0
-        uint64_t hash = Hash8_U64_Length(perlin->hash,(const char*) p_arr, p_arr_len);
+        uint64_t hash = Hash8_U64_Length(perlin->hash,(const char*) perlin->point_coords, point_len);
         Rand64_Reseed(perlin->rand,hash);
         for (i = 0; i < perlin->dim; ++i) {
             g_arr[i] = (Rand64_Next(perlin->rand) & 1) ? 1 : -1;
@@ -179,7 +182,8 @@ double perlin_noise(pPerlin_t p, const double* coords) {
     advance:
         perlin->counter[i] ^= 1;
         if (i < perlin->dim) {    //Avoid buffer overflow
-            p_arr[i] = coords[i] - perlin->pnt_bldr[perlin->counter[i]][i];
+            perlin->point_coords[i] = perlin->pnt_bldr[perlin->counter[i]][i];
+            p_arr[i] = coords[i] - perlin->point_coords[i];
         }
         if (perlin->counter[i] == 0) {
             ++i;
